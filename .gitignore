@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+env/
+venv/
+.ipynb_checkpoints/
+
+# Big data/models
+data/
+datasets/
+outputs/
+checkpoints/
+models/
+logs/
+*.pt
+*.pth
+*.h5
+*.pkl
+*.npz
+*.zip
+*.tar*
+*.mp4
+*.mov
+*.avi
