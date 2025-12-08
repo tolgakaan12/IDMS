@@ -1,6 +1,6 @@
-# IDMS - EMG-Based Trajectory Prediction
+# Intent Driven Motion Synthesis and Residual Analysis
 
-Predicting elbow joint trajectories from EMG (electromyography) signals using deep learning and statistical residual analysis.
+Predicting elbow joint trajectories from sEMG (surface electromyography) signals using deep learning and statistical residual analysis.
 
 ## Overview
 
