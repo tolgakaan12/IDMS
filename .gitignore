@@ -8,9 +8,7 @@ venv/
 
 # Big data/models
 data/
-datasets/
 outputs/
-checkpoints/
 models/
 logs/
 *.pt
@@ -23,3 +21,5 @@ logs/
 *.mp4
 *.mov
 *.avi
+
+*.DS_Store
