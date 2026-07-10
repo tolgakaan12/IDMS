@@ -85,7 +85,7 @@ def summary(k, scores, kernel, drop, model, epochs, batch, files):
 
     # region Self-documentation
     from datetime import datetime
-    summary_dir = '/Users/tolgakaancelebi/VS Code/IDMS/Summaries'
+    summary_dir = os.environ.get('IDMS_SUMMARY_DIR', 'Summaries')
     os.makedirs(summary_dir, exist_ok=True)
 
     dir_path, filename, ends = incr_file(summary_dir, 'model_summary', '.txt')
