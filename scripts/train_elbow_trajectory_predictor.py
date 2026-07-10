@@ -24,12 +24,12 @@ import numpy as np
 import tensorflow as tf
 
 # Import custom modules
-from data_gen.idms_trajectory_datagenerator import IDMSTrajectoryDataGenerator
-from model_selection.elbow_trajectory_architectures import (
+from idms.data.generator import IDMSTrajectoryDataGenerator
+from idms.uncertainty.architectures import (
     elbow_trajectory_dual_head_model,
     elbow_trajectory_single_head_model,
 )
-from model_selection.elbow_uncertainty_model import create_elbow_uncertainty_model
+from idms.uncertainty.model import create_elbow_uncertainty_model
 from tensorflow.keras.callbacks import (
     EarlyStopping,
     ModelCheckpoint,

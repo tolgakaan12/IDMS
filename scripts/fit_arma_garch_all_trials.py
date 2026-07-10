@@ -22,8 +22,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import our modules
-from save_individual_trial_residuals import load_trial_residuals, convert_to_dataframe_format
-from residual_analysis.arma_garch_residual_model import EnhancedARMAGARCH
+from idms.residuals.cache import load_trial_residuals, convert_to_dataframe_format
+from idms.residuals.arma_garch import EnhancedARMAGARCH
 
 def fit_arma_garch_all_trials(output_dir: str = "residual_analysis/arma_garch_fits"):
     """

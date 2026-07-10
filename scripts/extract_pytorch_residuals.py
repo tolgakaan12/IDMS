@@ -35,8 +35,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import PyTorch model and data utilities
-from pytorch_models.tcanet_idms import create_tcanet_idms_model
-from data_gen.idms_trajectory_datagenerator import IDMSTrajectoryDataGenerator
+from idms.estimator.models.tcanet import create_tcanet_idms_model
+from idms.data.generator import IDMSTrajectoryDataGenerator
 
 
 class PyTorchResidualExtractor:

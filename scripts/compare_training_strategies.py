@@ -25,8 +25,8 @@ from sklearn.metrics import r2_score
 import matplotlib.pyplot as plt
 
 # Import components
-from pytorch_models.tcanet_idms import create_tcanet_idms_model
-from pytorch_models.pytorch_data_adapter import create_idms_dataloaders
+from idms.estimator.models.tcanet import create_tcanet_idms_model
+from idms.estimator.data.torch_dataset import create_idms_dataloaders
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

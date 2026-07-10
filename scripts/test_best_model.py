@@ -23,7 +23,7 @@ import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 # Import the data generator
-from data_gen.idms_trajectory_datagenerator import IDMSTrajectoryDataGenerator
+from idms.data.generator import IDMSTrajectoryDataGenerator
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -98,9 +98,9 @@ class ModelEvaluator:
         """
         try:
             # Import custom objects
-            from model_selection.modular_architectures import TrajEstimator, AdaptTrajEstimator
-            from model_selection.uncertainty_trajectory_layers import JacobianTrajEstimator, AdaptJacobianTrajEstimator, UncertaintyTrajEstimator
-            from model_selection.uncertainty_losses import aleatoric_trajectory_loss
+            from idms.uncertainty.blocks import TrajEstimator, AdaptTrajEstimator
+            from idms.uncertainty.jacobian_layers import JacobianTrajEstimator, AdaptJacobianTrajEstimator, UncertaintyTrajEstimator
+            from idms.uncertainty.losses import aleatoric_trajectory_loss
             
             # Create custom objects dictionary
             custom_objects = {

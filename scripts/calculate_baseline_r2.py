@@ -20,7 +20,7 @@ from typing import Dict, Any
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 # Import the data generator
-from data_gen.idms_trajectory_datagenerator import IDMSTrajectoryDataGenerator
+from idms.data.generator import IDMSTrajectoryDataGenerator
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
