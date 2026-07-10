@@ -172,13 +172,13 @@ class IDMSTrajectoryDataGenerator(Sequence):
                         
                         # Apply additional preprocessing if specified
                         if self.emg_preproc == 'denoise':
-                            from data_gen.preproc import denoise
+                            from idms.data.preproc import denoise
                             emg_array = denoise(emg_array, sfreq=2000, high_band=20, low_band=450)
                         elif self.emg_preproc == 'hp_filter':
-                            from data_gen.preproc import hp_filter_120hz
+                            from idms.data.preproc import hp_filter_120hz
                             emg_array = hp_filter_120hz(emg_array, cutoff=120, sfreq=2000)
                         elif self.emg_preproc == 'bandpass':
-                            from data_gen.preproc import bp_filter
+                            from idms.data.preproc import bp_filter
                             emg_array = bp_filter(emg_array, high_band=7, low_band=400, sfreq=2000)
                         
                         # Apply normalization after preprocessing
