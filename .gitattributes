@@ -1,0 +1,6 @@
+# Normalize line endings to LF across the repo
+* text=auto eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
