@@ -19,8 +19,6 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import h5py
 import numpy as np
-import tensorflow as tf
-from tensorflow.keras.utils import Sequence
 from typing import List, Tuple, Optional, Dict, Any
 import logging
 from pathlib import Path
@@ -29,7 +27,7 @@ from idms.data.preproc import norm_emg
 logger = logging.getLogger(__name__)
 
 
-class IDMSTrajectoryDataGenerator(Sequence):
+class IDMSTrajectoryDataGenerator:
     """
     Data generator for trajectory prediction using real future data points.
     
