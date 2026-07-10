@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.DS_Store
+
+# Data & model artifacts (large, not versioned)
+data/*.h5
+data/*.hdf5
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.pkl
+*.npy
+
+# Outputs
+outputs/
+experiments/
+*.png
+*.svg
+*.mp4

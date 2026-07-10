@@ -1,0 +1,24 @@
+name: idms
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - scipy
+  - pandas
+  - h5py
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - tqdm
+  - statsmodels>=0.14
+  - pip:
+      # Deep learning — BOTH frameworks are required:
+      #   torch  -> Contribution 1 (estimator) + 2 (residuals)
+      #   tensorflow -> Contribution 3 (uncertainty) AND data_gen (keras.utils.Sequence)
+      - torch>=2.2
+      - tensorflow>=2.15
+      - einops
+      - arch            # ARMA-GARCH volatility modelling
