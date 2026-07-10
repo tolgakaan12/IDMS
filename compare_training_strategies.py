@@ -182,7 +182,7 @@ class TrainingStrategyComparator:
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 patience_counter = 0
-                best_model_state = model.state_dict().copy()
+                best_model_state = {k: v.detach().clone() for k, v in model.state_dict().items()}
             else:
                 patience_counter += 1
                 if patience_counter >= self.model_config['patience']:
@@ -292,7 +292,7 @@ class TrainingStrategyComparator:
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 patience_counter = 0
-                best_model_state = model.state_dict().copy()
+                best_model_state = {k: v.detach().clone() for k, v in model.state_dict().items()}
             else:
                 patience_counter += 1
                 if patience_counter >= self.model_config['patience']:
