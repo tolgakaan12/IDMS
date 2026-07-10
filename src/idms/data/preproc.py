@@ -187,8 +187,8 @@ def main():
     import sys
     sys.path.append("/Users/tolgakaancelebi/VS Code/IDMS")
 
-    from utility.save_load_util import load_emg
-    import utility.save_load_util as slu
+    from idms.common.save_load_util import load_emg
+    import idms.common.save_load_util as slu
     import matplotlib.pyplot as plt
     import seaborn as sns
     sns.set()
