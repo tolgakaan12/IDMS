@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "idms"
+version = "0.1.0"
+description = "sEMG-to-elbow-trajectory intent estimation, residual modelling, and uncertainty (MSc thesis)"
+requires-python = ">=3.10"
+# Runtime deps are pinned in environment.yml (dual-framework: torch + tensorflow).
+# Listed loosely here so `pip install -e .` works without forcing versions.
+dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "h5py",
+    "scikit-learn",
+    "matplotlib",
+    "seaborn",
+    "tqdm",
+    "statsmodels>=0.14",
+    "arch",
+]
+
+[project.optional-dependencies]
+torch = ["torch>=2.2"]          # Contribution 1 (estimator) + 2 (residuals)
+tf = ["tensorflow>=2.15", "einops"]  # Contribution 3 (uncertainty) + data generator
+
+[tool.setuptools.packages.find]
+where = ["src"]
