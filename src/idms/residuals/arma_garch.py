@@ -828,8 +828,3 @@ def test_scaling_fix():
     plt.show()
     
     return model, true_residuals, simulated
-
-
-if __name__ == "__main__":
-    # Run test
-    model, true_data, sim_data = test_scaling_fix()

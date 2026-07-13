@@ -329,33 +329,3 @@ def create_idms_dataloaders(
 
 
 # Example usage and testing
-if __name__ == "__main__":
-    # Test the data adapter
-    print("Testing PyTorch IDMS Data Adapter...")
-    
-    try:
-        # Create data loaders (will use dummy data if real dataset not available)
-        train_loader, val_loader, test_loader = create_idms_dataloaders(
-            dataset_path="data/idms_ready_dataset.h5",
-            window_size=1000,
-            batch_size=16,
-            subjects=None,  # Use all subjects
-            trials=None     # Use all trials
-        )
-        
-        # Test loading a batch
-        for batch_idx, (X_batch, y_batch) in enumerate(train_loader):
-            print(f"\nBatch {batch_idx}:")
-            print(f"  X shape: {X_batch.shape}")  # Should be (batch, 1, 4, 1000)
-            print(f"  y shape: {y_batch.shape}")  # Should be (batch, 10)
-            print(f"  X dtype: {X_batch.dtype}")
-            print(f"  y dtype: {y_batch.dtype}")
-            
-            if batch_idx >= 2:  # Test first 3 batches
-                break
-                
-        print("✓ PyTorch data adapter working correctly!")
-        
-    except Exception as e:
-        print(f"✗ Error testing data adapter: {e}")
-        print("Note: This is expected if the dataset file doesn't exist yet.")

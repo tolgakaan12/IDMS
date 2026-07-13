@@ -579,7 +579,3 @@ def test_trajectory_generator():
         print(f"❌ Error: {e}")
         import traceback
         traceback.print_exc()
-
-
-if __name__ == "__main__":
-    test_trajectory_generator()

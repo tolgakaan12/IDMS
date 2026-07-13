@@ -24,7 +24,8 @@ dependencies = [
 
 [project.optional-dependencies]
 torch = ["torch>=2.2"]          # Contribution 1 (estimator) + 2 (residuals)
-tf = ["tensorflow>=2.15", "einops"]  # Contribution 3 (uncertainty) + data generator
+tf = ["tensorflow>=2.15", "einops"]  # Contribution 3 (uncertainty)
+dev = ["pytest"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

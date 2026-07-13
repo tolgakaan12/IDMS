@@ -166,32 +166,3 @@ def test_saved_residuals():
         print(f"  {trial['trial_name']}: {len(residuals)} residuals, std={np.std(residuals):.4f}")
     
     return trial_data
-
-
-if __name__ == "__main__":
-    import argparse
-    
-    parser = argparse.ArgumentParser(description='Save individual trial residuals')
-    parser.add_argument('--save', action='store_true', help='Save residuals (default: test loading)')
-    parser.add_argument('--output-dir', default='residual_analysis_clean/trial_residuals', 
-                       help='Output directory')
-    
-    args = parser.parse_args()
-    
-    if args.save:
-        print("SAVING INDIVIDUAL TRIAL RESIDUALS")
-        print("="*40)
-        residuals_dict, metadata_df = save_trial_residuals(args.output_dir)
-        
-        print("\nTesting saved residuals...")
-        test_saved_residuals()
-        
-    else:
-        print("TESTING SAVED RESIDUALS")
-        print("="*30)
-        try:
-            trial_data = test_saved_residuals()
-            print("✅ Saved residuals are working correctly!")
-        except FileNotFoundError:
-            print("❌ No saved residuals found. Run with --save first:")
-            print("   python save_individual_trial_residuals.py --save")

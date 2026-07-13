@@ -699,7 +699,3 @@ def comprehensive_trial_statistical_analysis():
         print(f"   {failure}: {count}/{len(results_df)} trials ({pct:.1f}%)")
     
     return results_df
-
-
-if __name__ == "__main__":
-    results_df = comprehensive_trial_statistical_analysis()

@@ -289,17 +289,3 @@ def load_dict_from_hdf5(file_path):
     # Loading the dictionary from an HDF5 file
     with h5py.File(file_path, 'r') as hdf_file:
         return recursive_load(hdf_file)
-
-
-if __name__ == '__main__':
-    my_dict = {
-        "array": [1, 2, 3, 4, 5],
-        "value": 42,
-        "nested_dict": {"a": 1, "b": 2}
-    }
-
-    file_path = 'data_test.h5'
-    save_dict_to_hdf5(file_path, my_dict)
-
-    loaded_dict = load_dict_from_hdf5(file_path)
-    print(loaded_dict)

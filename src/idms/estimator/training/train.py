@@ -532,7 +532,3 @@ def main():
     print(f"Results saved to: {results['experiment_dir']}")
     print(f"Test RMSE: {results['test_metrics']['rmse']:.6f}")
     print(f"Test R²: {results['test_metrics']['r2']:.6f}")
-
-
-if __name__ == "__main__":
-    main()
