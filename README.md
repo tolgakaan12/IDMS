@@ -1,52 +1,78 @@
-# sEMG → Elbow Trajectory Intent Estimation
+# IDMS — Uncertainty-Aware sEMG-to-Trajectory Intent Estimation
 
-Core code for the MSc thesis **"Residual Modelling and Uncertainty-Aware
-sEMG-to-Trajectory Intent Estimation"** (T. K. Celebi, 2025).
+Predicting near-future **elbow-angle trajectories** from surface electromyography
+(sEMG), with statistical residual modelling and predictive uncertainty.
 
-Predicts near-future **elbow-angle trajectories** from 4-channel surface EMG, then
-(2) models the estimator's residuals with ARMA-GARCH-t, and (3) adds predictive
-uncertainty. The intent-estimator result is **replication-verified**: the trained
-checkpoint reproduces test **R² = 0.7982814312** exactly.
+Core code for the MSc thesis *"Residual Modelling and Uncertainty-Aware
+sEMG-to-Trajectory Intent Estimation"* (T. K. Celebi, 2025).
 
-## Install
+## Overview
+
+The project implements a TCANet-IDMS model that:
+
+- extracts features from 4-channel EMG with multi-scale CNNs,
+- captures temporal dynamics with causal dilated convolutions,
+- predicts trajectory parameters with transformer attention, then maps them
+  through a differentiable critically-damped IDMS layer into a trajectory, and
+- analyses the prediction residuals with ARMA-GARCH-t models and quantifies
+  predictive uncertainty (aleatoric + epistemic).
+
+It is organised around the thesis's three contributions:
+
+1. **Intent estimator** — TCANet → `[vd, c1, a0]` → trajectory layer.
+2. **Residual modelling** — ARMA-GARCH-t on the estimator residuals.
+3. **Uncertainty** — aleatoric (analytical Jacobian) + epistemic (MC-dropout).
+
+## Model Architecture
+
+![Model Architecture](docs/nnoverview.png)
+
+- **Input**: EMG window (4 channels, 1000 samples at 2000 Hz)
+- **Feature extraction**: 3-scale CNN (125, 62, 31 sample kernels)
+- **Temporal processing**: TCN with exponential dilation
+- **Attention**: multi-head transformer encoder
+- **Output**: 10 trajectory points (0.25 s horizon)
+
+## Project Structure
+
+```
+src/idms/
+├── common/       metrics · config (DataConfig) · save_load_util
+├── data/         generator (windowing) · preproc (EMG filtering)
+├── estimator/    C1 — TCANet + differentiable IDMS trajectory layer
+│   ├── models/       tcanet.py
+│   ├── data/         torch Dataset / DataLoaders
+│   └── training/     trainer + main()
+├── residuals/    C2 — arma_garch · cache · trial_stats
+└── uncertainty/  C3 — model · losses · jacobian · train
+scripts/          thin command-line entrypoints (run from repo root)
+tests/            pytest suite
+```
+
+## Setup
 
 ```bash
 mamba env create -f environment.yml   # or conda
 mamba activate idms
-pip install -e .            # runtime (PyTorch, statsmodels, arch, ...)
+pip install -e .            # runtime (PyTorch, statsmodels, arch, …)
 pip install -e ".[dev]"     # + pytest
 ```
 
-The package installs as `idms`; import from anywhere (`from idms.estimator.models.tcanet import ...`).
+The package installs as `idms` and imports from anywhere
+(`from idms.estimator.models.tcanet import create_tcanet_idms_model`).
 
-## Repository structure
+## Usage
 
-```
-src/idms/
-├── common/        metrics.py · config.py (DataConfig) · save_load_util.py
-├── data/          generator.py (windowing, numpy — no TF) · preproc.py
-├── estimator/     C1 — PyTorch
-│   ├── models/tcanet.py          TCANet + differentiable IDMS trajectory layer
-│   ├── data/torch_dataset.py     torch Dataset/DataLoaders over the generator
-│   └── training/train.py         TCANetIDMSTrainer + main()
-├── residuals/     C2 — arma_garch.py (EnhancedARMAGARCH) · cache.py · trial_stats.py
-└── uncertainty/   C3 — PyTorch (model_torch · losses_torch · jacobian_torch · train_torch)
-scripts/           thin entrypoints (run from repo root)
-tests/             pytest suite
-```
+All scripts assume the dataset is at `data/idms_ready_dataset.h5` (see **Data**).
 
-## The three contributions & how to run them
-
-Everything below assumes the dataset is at `data/idms_ready_dataset.h5` (see **Data**).
-
-**1. Intent estimator (PyTorch).**
+**1. Intent estimator**
 ```bash
-python scripts/train_estimator.py                    # train TCANet
-python scripts/compare_training_strategies.py        # Table 4.1: pretrain→finetune vs direct
-python scripts/calculate_baseline_r2.py              # naive baseline (Table 4.2)
+python scripts/train_estimator.py                 # train TCANet
+python scripts/compare_training_strategies.py     # pretrain→finetune vs direct
+python scripts/calculate_baseline_r2.py           # naive baseline
 ```
 
-**2. Residual modelling (ARMA-GARCH-t).**
+**2. Residual modelling**
 ```bash
 python scripts/extract_pytorch_residuals.py          # residuals from a trained model
 python scripts/fit_arma_garch_all_trials.py          # fit ARMA-GARCH-t across trials
@@ -54,57 +80,45 @@ python scripts/pytorch_residual_statistical_tests.py # diagnostic test battery
 python scripts/create_synthetic_residual_validation.py
 ```
 
-**3. Uncertainty (aleatoric + MC-dropout, PyTorch).**
+**3. Uncertainty**
 ```bash
 python scripts/train_uncertainty.py --dataset data/idms_ready_dataset.h5
 ```
-> The model predicts a mean and log-variance for each of [vd, c1, a0], propagates the
-> parameter variance to trajectory space via the analytical Jacobian (aleatoric), and
-> uses MC-dropout at inference (epistemic). Uses the correct [vd, c1, a0]
-> parameterization (`idms.uncertainty.model_torch.AleatoricUncertaintyModel`).
+
+The uncertainty model predicts a mean and log-variance for each of `[vd, c1, a0]`,
+propagates the parameter variance to trajectory space via the analytical Jacobian
+(aleatoric), and uses MC-dropout at inference (epistemic).
 
 ## Data
 
-The pipeline reads a single HDF5 file, `data/idms_ready_dataset.h5`, with layout:
+The pipeline reads a single HDF5 file, `data/idms_ready_dataset.h5`:
 
 ```
 /subjects/<subject_id>/<trial_id>/emg_data/<channel>   # 1-D array per channel, 2 kHz
                                           /...          # + elbow angle
 ```
-Default EMG channels: `biceps, triceps, bra, ecu`. The canonical windowing/split
-constants live in `idms.common.config.DataConfig` (window 1000, stride 50,
-delay 0.05 s, horizon 0.25 s, 10 points, test_ratio 0.05, seed 42).
 
-The dataset and trained checkpoints are **not committed** (large / private) — see
-`data/README.md`. A documented schema spec + a synthetic-example generator are
-planned so the repo can be run without the private data.
+- 5 subjects, 4 EMG channels: biceps, triceps, brachioradialis, extensor carpi ulnaris.
+- Windowing and split constants live in `idms.common.config.DataConfig`
+  (window 1000, stride 50, delay 0.05 s, horizon 0.25 s, 10 points, test ratio 0.05, seed 42).
 
-## Replicating the thesis R²
+The dataset and trained checkpoints are private and not committed — see
+`data/README.md`.
 
-With a trained checkpoint (`best_model.pt`) and the dataset:
-```python
-import torch
-from idms.estimator.models.tcanet import create_tcanet_idms_model
-from idms.estimator.data.torch_dataset import PyTorchIDMSDataset
-# build the 'test' split with the model_config from the checkpoint, load state_dict
-# (strict=True), forward-pass, r2_score on flattened trajectory points -> 0.7982814312
-```
-See `CORE_CODE_INVENTORY.md` for the exact checkpoint/config/paths that reproduce it.
+## Replicating the thesis result
+
+With a trained checkpoint (`best_model.pt`) and the dataset, the estimator
+reproduces test **R² = 0.7982814312**: build the `test` split with the
+checkpoint's `model_config`, load the `state_dict`, forward-pass, and compute
+`r2_score` on the flattened trajectory points.
 
 ## Testing
 
 ```bash
-pytest              # metrics equivalence, TCANet forward+param-count, ARMA-GARCH fit
+pytest
 ```
 
-## Frameworks
+## Dependencies
 
-The entire project is **PyTorch** — no TensorFlow. The data generator is pure numpy/h5py.
-
-## Status
-
-- ✅ All three contributions (estimator, residuals, uncertainty): PyTorch, tested (25 pytest tests).
-- ✅ C1 replication-locked (test R² = 0.7982814312, re-verified after every refactor).
-- ✅ C3 uncertainty uses the correct [vd, c1, a0] Jacobian (analytical == autograd), with
-  aleatoric + MC-dropout epistemic uncertainty.
-- ⏳ Onboarding for external data: schema spec, synthetic example, `--dataset` CLI args (planned).
+PyTorch 2.8 · NumPy · Pandas · SciPy · StatsModels · ARCH · Matplotlib · h5py.
+See `environment.yml` for the complete specification.

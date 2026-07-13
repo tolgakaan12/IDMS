@@ -21,3 +21,5 @@ experiments/
 *.png
 *.svg
 *.mp4
+# keep the architecture diagram used by the README
+!docs/*.png

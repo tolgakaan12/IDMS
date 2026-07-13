@@ -2,9 +2,9 @@
 
 Place the elbow dataset here:
 
-- `idms_ready_dataset.h5` (~649 MB) — synchronized 4-channel sEMG + elbow-angle trajectories.
+- `idms_ready_dataset.h5` — synchronized 4-channel sEMG + elbow-angle trajectories.
 
-The dataset and trained checkpoints are **not committed** (see repo `.gitignore`). This project's copy of
-the dataset lives at `report/idmss/data/idms_ready_dataset.h5`; the data-preparation pipeline that builds it
-(from raw sEMG + Vicon mocap) is in `masters/exp_analysis/` (`create_h5_dataset.py`, `extract_emg_trials.py`,
-`emg_mocap_sync.py`). See `../CORE_CODE_INVENTORY.md`.
+The dataset and trained checkpoints are private and not committed (see repo
+`.gitignore`). The dataset is built from raw sEMG + Vicon motion capture by a
+separate data-preparation pipeline; the HDF5 layout it produces is documented in
+the top-level `README.md` (**Data**).
