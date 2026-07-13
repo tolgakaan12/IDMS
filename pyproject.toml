@@ -20,11 +20,11 @@ dependencies = [
     "tqdm",
     "statsmodels>=0.14",
     "arch",
+    "torch>=2.2",       # all three contributions are PyTorch
+    "einops",
 ]
 
 [project.optional-dependencies]
-torch = ["torch>=2.2"]          # Contribution 1 (estimator) + 2 (residuals)
-tf = ["tensorflow>=2.15", "einops"]  # Contribution 3 (uncertainty)
 dev = ["pytest"]
 
 [tool.setuptools.packages.find]

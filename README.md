@@ -13,8 +13,8 @@ checkpoint reproduces test **R² = 0.7982814312** exactly.
 ```bash
 mamba env create -f environment.yml   # or conda
 mamba activate idms
-pip install -e ".[torch]"             # estimator + residuals (PyTorch)
-pip install -e ".[torch,tf,dev]"      # + uncertainty (TensorFlow) + tests
+pip install -e .            # runtime (PyTorch, statsmodels, arch, ...)
+pip install -e ".[dev]"     # + pytest
 ```
 
 The package installs as `idms`; import from anywhere (`from idms.estimator.models.tcanet import ...`).
@@ -30,7 +30,7 @@ src/idms/
 │   ├── data/torch_dataset.py     torch Dataset/DataLoaders over the generator
 │   └── training/train.py         TCANetIDMSTrainer + main()
 ├── residuals/     C2 — arma_garch.py (EnhancedARMAGARCH) · cache.py · trial_stats.py
-└── uncertainty/   C3 — TensorFlow prototype (model/losses/jacobian_layers/...)
+└── uncertainty/   C3 — PyTorch (model_torch · losses_torch · jacobian_torch · train_torch)
 scripts/           thin entrypoints (run from repo root)
 tests/             pytest suite
 ```
@@ -54,12 +54,14 @@ python scripts/pytorch_residual_statistical_tests.py # diagnostic test battery
 python scripts/create_synthetic_residual_validation.py
 ```
 
-**3. Uncertainty (TensorFlow prototype).**
+**3. Uncertainty (aleatoric + MC-dropout, PyTorch).**
 ```bash
-python scripts/train_elbow_trajectory_predictor.py   # model_type='uncertainty'
+python scripts/train_uncertainty.py --dataset data/idms_ready_dataset.h5
 ```
-> C3 is a TensorFlow prototype and is **not yet ported to PyTorch** — it's the one
-> remaining Keras dependency. It also has no final-model results yet.
+> The model predicts a mean and log-variance for each of [vd, c1, a0], propagates the
+> parameter variance to trajectory space via the analytical Jacobian (aleatoric), and
+> uses MC-dropout at inference (epistemic). Uses the correct [vd, c1, a0]
+> parameterization (`idms.uncertainty.model_torch.AleatoricUncertaintyModel`).
 
 ## Data
 
@@ -97,12 +99,12 @@ pytest              # metrics equivalence, TCANet forward+param-count, ARMA-GARC
 
 ## Frameworks
 
-Contributions 1 & 2 are **PyTorch** (the data generator is pure numpy — no TensorFlow).
-Contribution 3 is a **TensorFlow** prototype. So `[torch]` alone runs C1+C2; add `[tf]`
-for C3.
+The entire project is **PyTorch** — no TensorFlow. The data generator is pure numpy/h5py.
 
 ## Status
 
-- ✅ C1 estimator + C2 residuals: PyTorch, TF-free, replication-locked, tested.
-- ⏳ C3 uncertainty: TensorFlow prototype, pending PyTorch port.
+- ✅ All three contributions (estimator, residuals, uncertainty): PyTorch, tested (25 pytest tests).
+- ✅ C1 replication-locked (test R² = 0.7982814312, re-verified after every refactor).
+- ✅ C3 uncertainty uses the correct [vd, c1, a0] Jacobian (analytical == autograd), with
+  aleatoric + MC-dropout epistemic uncertainty.
 - ⏳ Onboarding for external data: schema spec, synthetic example, `--dataset` CLI args (planned).
