@@ -47,7 +47,7 @@ class IDMSTrajectoryDataGenerator:
                  window_size: int = 1000,  # 0.5s at 2000Hz
                  stride: int = 50,        # 0.025s between windows  
                  delay: float = 0.05,      # Start future prediction 0.2s ahead
-                 horizon: float = 0.5,    # Predict 0.5s into future
+                 horizon: float = 0.25,    # Predict 0.5s into future
                  n_trajectory_points: int = 10,  # Number of trajectory samples
                  batch_size: int = 32,
                  shuffle: bool = True,
@@ -56,7 +56,7 @@ class IDMSTrajectoryDataGenerator:
                  normalize_emg: bool = True,
                  emg_preproc: Optional[str] = None,  # 'denoise', 'hp_filter', etc.
                  split: str = 'all',  # 'all', 'train', 'val', 'test'
-                 test_ratio: float = 0.2,
+                 test_ratio: float = 0.05,
                  val_ratio_from_trainval: float = 0.2,
                  seed: int = 42):
         """
@@ -545,7 +545,7 @@ def test_trajectory_generator():
             window_size=500,   # 0.25s
             stride=50,         # 0.025s
             delay=0.2,         # 0.2s delay
-            horizon=0.5,       # 0.5s horizon  
+            horizon=0.25,       # 0.5s horizon  
             n_trajectory_points=10,
             batch_size=8,
             split='train'

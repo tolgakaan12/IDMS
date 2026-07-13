@@ -302,7 +302,7 @@ class TCANet_IDMS(nn.Module):
         
         # Trajectory parameters
         trajectory_points: int = 10,
-        trajectory_horizon: float = 0.5,  # 500ms horizon
+        trajectory_horizon: float = 0.25,  # 500ms horizon
         trajectory_delay: float = 0.05,   # 50ms delay
     ):
         super().__init__()
@@ -399,7 +399,7 @@ def create_tcanet_idms_model(
     window_size=1000,
     n_channels=4, 
     trajectory_points=10,
-    trajectory_horizon=0.5,
+    trajectory_horizon=0.25,
     trajectory_delay=0.05
 ):
     """

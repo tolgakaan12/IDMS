@@ -104,7 +104,7 @@ class TCANetIDMSTrainer:
             window_size=config.get('window_size', 1000),
             n_channels=config.get('n_channels', 4),
             trajectory_points=config.get('n_trajectory_points', 10),
-            trajectory_horizon=config.get('horizon', 0.5),
+            trajectory_horizon=config.get('horizon', 0.25),
             trajectory_delay=config.get('delay', 0.05),
         ).to(self.device)
         
@@ -126,7 +126,7 @@ class TCANetIDMSTrainer:
         self.train_loader, self.val_loader, self.test_loader = create_idms_dataloaders(
             dataset_path=str(self.dataset_path),
             window_size=config.get('window_size', 1000),
-            horizon=config.get('horizon', 0.5),
+            horizon=config.get('horizon', 0.25),
             batch_size=config.get('batch_size', 32),
             emg_preproc=config.get('emg_preproc', None),
             subjects=config.get('subjects', None),
@@ -448,7 +448,7 @@ class TCANetIDMSTrainer:
 
 def create_experiment_config(
     window_size: int = 1000,
-    horizon: float = 0.5,
+    horizon: float = 0.25,
     batch_size: int = 32,
     learning_rate: float = 0.001,
     emg_preproc: str = None,
@@ -506,7 +506,7 @@ def main():
     
     config = create_experiment_config(
         window_size=1000,
-        horizon=0.5,
+        horizon=0.25,
         batch_size=32,
         learning_rate=0.001,
         emg_preproc=None,  # or 'denoise', 'bandpass', etc.
