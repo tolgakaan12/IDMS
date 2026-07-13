@@ -24,6 +24,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from idms.common.metrics import regression_metrics
 import pandas as pd
 import logging
 
@@ -180,30 +181,7 @@ class TCANetIDMSTrainer:
     def calculate_metrics(self, predictions: torch.Tensor, targets: torch.Tensor) -> Dict[str, float]:
         """Calculate evaluation metrics"""
         
-        # Convert to numpy for metric calculation
-        pred_np = predictions.cpu().numpy()
-        target_np = targets.cpu().numpy()
-        
-        # Flatten for overall metrics
-        pred_flat = pred_np.flatten()
-        target_flat = target_np.flatten()
-        
-        # Calculate metrics
-        mse = mean_squared_error(target_flat, pred_flat)
-        rmse = np.sqrt(mse)
-        mae = mean_absolute_error(target_flat, pred_flat)
-        
-        # R-squared
-        ss_res = np.sum((target_flat - pred_flat) ** 2)
-        ss_tot = np.sum((target_flat - np.mean(target_flat)) ** 2)
-        r2 = 1 - (ss_res / ss_tot) if ss_tot != 0 else 0
-        
-        return {
-            'mse': mse,
-            'rmse': rmse,
-            'mae': mae,
-            'r2': r2
-        }
+        return regression_metrics(predictions.cpu().numpy(), targets.cpu().numpy())
     
     def train_epoch(self) -> Dict[str, float]:
         """Train for one epoch"""

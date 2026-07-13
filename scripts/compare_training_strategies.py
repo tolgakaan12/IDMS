@@ -21,7 +21,7 @@ import torch.optim as optim
 from pathlib import Path
 import logging
 from typing import Dict, List, Tuple
-from sklearn.metrics import r2_score
+from idms.common.metrics import r2
 import matplotlib.pyplot as plt
 
 # Import components
@@ -167,7 +167,7 @@ class TrainingStrategyComparator:
             
             train_loss = np.mean(train_losses)
             val_loss = np.mean(val_losses)
-            val_r2 = r2_score(all_targets, all_preds)
+            val_r2 = r2(all_targets, all_preds)
             
             training_history['train_loss'].append(train_loss)
             training_history['val_loss'].append(val_loss)
@@ -277,7 +277,7 @@ class TrainingStrategyComparator:
             
             train_loss = np.mean(train_losses)
             val_loss = np.mean(val_losses)
-            val_r2 = r2_score(all_targets, all_preds)
+            val_r2 = r2(all_targets, all_preds)
             
             training_history['train_loss'].append(train_loss)
             training_history['val_loss'].append(val_loss)
@@ -329,7 +329,7 @@ class TrainingStrategyComparator:
                 all_preds.extend(y_pred.cpu().numpy().flatten())
                 all_targets.extend(y_batch.cpu().numpy().flatten())
         
-        return r2_score(all_targets, all_preds)
+        return r2(all_targets, all_preds)
     
     def compare_strategies(self) -> Dict:
         """Compare both strategies and return results."""

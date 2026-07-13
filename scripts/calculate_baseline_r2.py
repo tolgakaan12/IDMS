@@ -18,6 +18,7 @@ from pathlib import Path
 import logging
 from typing import Dict, Any
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from idms.common.metrics import regression_metrics
 
 # Import the data generator
 from idms.data.generator import IDMSTrajectoryDataGenerator
@@ -166,17 +167,8 @@ class BaselineCalculator:
         Returns:
             Dictionary of metrics
         """
-        # Flatten for overall metrics
-        pred_flat = predictions.flatten()
-        target_flat = targets.flatten()
-        
-        metrics = {
-            'rmse': np.sqrt(mean_squared_error(target_flat, pred_flat)),
-            'mae': mean_absolute_error(target_flat, pred_flat),
-            'mse': mean_squared_error(target_flat, pred_flat),
-            'r2': 1 - (np.sum((target_flat - pred_flat) ** 2) / 
-                      np.sum((target_flat - np.mean(target_flat)) ** 2))
-        }
+        # Overall metrics (flattened over all trajectory points)
+        metrics = regression_metrics(predictions, targets)
         
         # Calculate trajectory-point-wise metrics
         for t in range(predictions.shape[1]):
